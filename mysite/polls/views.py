@@ -1,54 +1,35 @@
-from django.shortcuts import render, get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader 
-from django.http import Http404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice, Question
 
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_question_list'
+    # The auto generated context var is question_list. To override this we provide the 
+    # the context_object_name attribute, speciflly that we use last_question_list instead. 
+    # As an alternative approuch, you could change your templates to match the new 
+    # default context variabbles - bt its a lot easer to just tell Django to use the 
+    # variable you want. 
 
-#def index(request):
-#    return HttpResponse("Hello, world. You're at the polls index.")
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
 
-# def index(request):
-#     latest_question_list = Question.objects.order_by('-pub_date')[:5]
-#     output = ', '.join([q.question_text for q in latest_question_list])
-#     return HttpResponse(output)
+class DetailView(generic.DetailView):
+    model = Question
+    # The question variable is provided automatically -- since we're using a Django model (Question), 
+    # Django is able to detemine an approprate name for the context vaiable
+    template_name = 'polls/detail.html'
+    # By default, the DetailView generic view uses a template call <app name>/<model name>_detail.html.
+    # In our case, it was use the template "polls/question_detail.html". The template_name attribute is
+    # usted to tell Django to use a specific template name instead of the autogen defautl. 
 
-#def index(request):
-#    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-#    print (latest_question_list)
-#    template = loader.get_template('polls/index.html')
-#    context = {
-#            'latest_question_list': latest_question_list,
-#    }
-#    return HttpResponse(template.render(context, request))
-
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, 'polls/index.html', context)
-
-#def detail(request, question_id):
-#    return HttpResponse("You're looking at question %s. " % question_id)
-
-#def detail(request, question_id):
-#    try: 
-#        question = Question.objects.get(pk=question_id)
-#    except Question.DoesNotExist:
-#        raise Http404("Question does not exist")
-#    return render(request, 'polls/detail.html', {question: 'question'})
-
-def detail (request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/detail.html', {'question': question})
-
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
-
-#def vote(request, question_id):
-#    return HttpResponse("You're voting on question %s." % question_id) 
+class ResultsView(generic.DetailView):
+    model =  Question
+    template_name = 'polls/results.html'
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
