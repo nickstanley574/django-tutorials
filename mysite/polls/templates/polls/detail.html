@@ -1,6 +1,26 @@
 <h1> {{ question.question_text }} </h1>
-<ul>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+
 {% for choice in question.choice_set.all %}
-	<li>{{ choice.choice_text }}</li>
+	<input type="radio" name="choice" id="choice{{ forlopp.counter }}" value="{{ choice.id }}" />
+	<label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br/>
 {% endfor %}
-</ul>
+<input type="submit" value="Vote" />
+</form>
+
+
+{% comment %}
+
+The above templat displays a radio button for each question choice. The value of each radio button is the associated question choice's ID. The name of each radio button is "choice". That means, when somebody selects one of the radio buttons and submists teh form, it'll send the POST data choice=# where # is the ID of the selected choice. THis is the basic concepts of HTML forms. 
+
+We set the form's action to {% url 'polls:vote' question.id %}, and we set method="post". Using method="post" (as opposed to method="get) is very important, b/c the act of submitting this for will alter date server-side. When you create a form that alters data server-side, use method="post". 
+
+forloop.counter indicates how many times the for tag has gone though its loop 
+
+since we're creating a POST form (which can have the effect of modifying date). we need to worry about cross site request forgeries. Thankfully, you don't have to worry too hard, b/c Django comaes with a very easy-to-use sysrem for protecting against it. In shory, all POST form that are targeted at internal URLs should use the {% csrf_token  %} tamplate tag. 
+
+{% endcomment %}

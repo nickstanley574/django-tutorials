@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, render
-#from django.http import HttpResponse 
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader 
 from django.http import Http404
+from django.urls import reverse
 
-from .models import Question
+from .models import Choice, Question
 
 
 #def index(request):
@@ -43,9 +44,40 @@ def detail (request, question_id):
     return render(request, 'polls/detail.html', {'question': question})
 
 def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': question})
+
+#def vote(request, question_id):
+#    return HttpResponse("You're voting on question %s." % question_id) 
 
 def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id) 
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+        # request.POST is a dictionary-like object that lets you access submitted date by key name. 
+        # In this case, request.POST['choice'] returns the ID of the selected choice, as a string. 
+        # request.POST values are always strings! 
+    except (KeyError, Choice.DoesNotExist):
+        # request.POST['choice'] will raise KeyError if choice wasn't provided in POST data. 
+        # the code check for KeyError and redispays the question form with a erro message if choice isn't given. 
+        # Redispaly the question voting form. 
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "you didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return a HttpResponseRedirect after successfully dealing
+        # with POST data, This prevents date from being posted twice if a 
+        # user hits the Back button. 
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+    # After incrementing the choice count, the code returns an HttpResponseRedirect 
+    # rather than a nornam HttpResponse. HttpResponseRedirect taks a singe argument:
+    # the URL to which the user will be redirected. 
+
+    # We are using the reverse() function in the HttpResponseRedirect constructor 
+    # in this example. This function helps avoid having to hardcode a URL in the 
+    # view function. It is given the name of the view that we want to pass control
+    # to and the variable portion of the URL pattern that points to that view. 
 
