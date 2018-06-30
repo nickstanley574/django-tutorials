@@ -134,3 +134,18 @@ The template system uses dot-lookup syntax to access variable attributes.  In th
 How does one make it so that Django knows which app view to create for a url when using the {% url %} template tag? The answer is to add namespaces to your URLconf. In the polls/urls.py file.`app_name = 'polls'`
 
 ## Writing your first Django app, part 4
+
+
+### Write a simple form
+
+We set the form’s action to `{% url 'polls:vote' question.id %}`, and we set `method="post"`. Using `method="post"` (as opposed to `method="get"`) is very important, because the act of submitting this form will alter data server-side. **Whenever you create a form that alters data server-side, use `method="post"`. This tip isn’t specific to Django; it’s just good Web development practice.**
+
+Since we’re creating a POST form (which can have the effect of modifying data), we need to worry about Cross Site Request Forgeries. Thankfully, you don’t have to worry too hard, because Django comes with a very easy-to-use system for protecting against it. In short, all POST forms that are targeted at internal URLs should use the {% csrf_token %} template tag.
+
+`request.POST` is a dictionary-like object that lets you access submitted data by key name. In this case, `request.POST['choice']` returns the ID of the selected choice, as a string. `request.POST` values are always strings. Note that Django also provides `request.GET` for accessing `GET` data in the same way – but we’re explicitly using `request.POST` in our code, to ensure that data is only altered via a `POST` call.
+
+You should always return an `HttpResponseRedirect` after successfully dealing with `POST` data. This tip isn’t specific to Django; it’s just good Web development practice.
+
+### Use generic views: Less code is better
+
+These views represent a common case of basic Web development: getting data from the database according to a parameter passed in the URL, loading a template and returning the rendered template. Because this is so common, Django provides a shortcut, called the “generic views” system. Generic views abstract common patterns to the point where you don’t even need to write Python code to write an app.
