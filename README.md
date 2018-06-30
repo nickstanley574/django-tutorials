@@ -167,9 +167,20 @@ What’s different in automated tests is that the testing work is done for you b
 
 A conventional place for an application’s tests is in the application’s `tests.py` file; the testing system will automatically find tests in any file whose name begins with test.
 
-* python manage.py test polls looked for tests in the polls application
-* it found a subclass of the django.test.TestCase class
+* `python manage.py test polls` looked for tests in the polls application
+* it found a subclass of the `django.test.TestCase` class
 * it created a special database for the purpose of testing
 * it looked for test methods - ones whose names begin with test
-* in test_was_published_recently_with_future_question it created a Question instance whose pub_date field is 30 days in the  future
-* … and using the assertIs() method, it discovered that its was_published_recently() returns True, though we wanted it to return False
+* in `test_was_published_recently_with_future_question` it created a `Question` instance whose `pub_date` field is 30 days in the  future
+* … and using the `assertIs()` method, it discovered that its `was_published_recently()` returns `True`, though we wanted it to return `False`
+
+### The Django test client
+
+Django provides a test Client to simulate a user interacting with the code at the view level. We can use it in tests.py or even in the shell.
+
+```
+>>> from django.test.utils import setup_test_environment
+>>> setup_test_environment()
+```
+
+`setup_test_environment()` installs a template renderer which will allow us to examine some additional attributes on responses such as `response.context` that otherwise wouldn’t be available. **Note that this method does not setup a test database, so the following will be run against the existing database.** 
