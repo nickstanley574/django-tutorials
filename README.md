@@ -151,3 +151,25 @@ You should always return an `HttpResponseRedirect` after successfully dealing wi
 These views represent a common case of basic Web development: getting data from the database according to a parameter passed in the URL, loading a template and returning the rendered template. Because this is so common, Django provides a shortcut, called the “generic views” system. Generic views abstract common patterns to the point where you don’t even need to write Python code to write an app.
 
 `ListView` and `DetailView`. Respectively, those two views abstract the concepts of “display a list of objects” and “display a detail page for a particular type of object.” The `DetailView` generic view expects the primary key value captured from the URL to be called "pk", so we’ve changed question_id to pk for the generic views.
+
+## Writing your first Django app, part 5
+
+### Introducing automated testing
+
+What’s different in automated tests is that the testing work is done for you by the system. You create a set of tests once, and then as you make changes to your app, you can check that your code still works as you originally intended, without having to perform time consuming manual testing.
+
+* Tests will save you time
+* Tests don’t just identify problems, they prevent them
+* Tests make your code more attractive: “Code without tests is broken by design.” Jacob Kaplan-Moss
+* Tests help teams work together
+
+### Writing our first test
+
+A conventional place for an application’s tests is in the application’s `tests.py` file; the testing system will automatically find tests in any file whose name begins with test.
+
+* python manage.py test polls looked for tests in the polls application
+* it found a subclass of the django.test.TestCase class
+* it created a special database for the purpose of testing
+* it looked for test methods - ones whose names begin with test
+* in test_was_published_recently_with_future_question it created a Question instance whose pub_date field is 30 days in the  future
+* … and using the assertIs() method, it discovered that its was_published_recently() returns True, though we wanted it to return False
