@@ -184,3 +184,6 @@ Django provides a test Client to simulate a user interacting with the code at th
 ```
 
 `setup_test_environment()` installs a template renderer which will allow us to examine some additional attributes on responses such as `response.context` that otherwise wouldn’t be available. **Note that this method does not setup a test database, so the following will be run against the existing database.**
+
+
+Sometimes tests will need to be updated. Suppose that we amend our views so that only Questions with Choices are published. In that case, many of our existing tests will fail - telling us exactly which tests need to be amended to bring them up to date, so to that extent tests help look after themselves.
