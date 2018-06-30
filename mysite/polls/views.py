@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 
 from .models import Choice, Question
 
@@ -15,8 +16,15 @@ class IndexView(generic.ListView):
     # variable you want. 
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        """
+        Return the last five published questions (not including those set to be 
+        publised in the future).
+        """
+        # Question.object.filter(pub_date__lte=timezone.now()) returns a queryset containing 
+        # Questions whose pub_date is less than or equal to - thatis, earlier than or equal
+        # to - timezone.now.
+        return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+
 
 class DetailView(generic.DetailView):
     model = Question
@@ -25,7 +33,14 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
     # By default, the DetailView generic view uses a template call <app name>/<model name>_detail.html.
     # In our case, it was use the template "polls/question_detail.html". The template_name attribute is
-    # usted to tell Django to use a specific template name instead of the autogen defautl. 
+    # usted to tell Django to use a specific template name instead of the autogen defautl.
+
+    def get_queryset(self):
+        """
+        Excluede any question that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
+
 
 class ResultsView(generic.DetailView):
     model =  Question

@@ -176,11 +176,11 @@ A conventional place for an application’s tests is in the application’s `tes
 
 ### The Django test client
 
-Django provides a test Client to simulate a user interacting with the code at the view level. We can use it in tests.py or even in the shell.
+Django provides a test Client to simulate a user interacting with the code at the view level. We can use it in `tests.py` or even in the shell.
 
 ```
 >>> from django.test.utils import setup_test_environment
 >>> setup_test_environment()
 ```
 
-`setup_test_environment()` installs a template renderer which will allow us to examine some additional attributes on responses such as `response.context` that otherwise wouldn’t be available. **Note that this method does not setup a test database, so the following will be run against the existing database.** 
+`setup_test_environment()` installs a template renderer which will allow us to examine some additional attributes on responses such as `response.context` that otherwise wouldn’t be available. **Note that this method does not setup a test database, so the following will be run against the existing database.**
