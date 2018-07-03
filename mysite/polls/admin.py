@@ -14,9 +14,8 @@ class QuestionAdmin(admin.ModelAdmin):
     #fields = ['pub_date','question_text']
 
     list_filter = ['pub_date']
-
     list_display = ('question_text', 'pub_date', 'was_published_recently')
-
+    search_fields = ['question_text']
     fieldsets = [
             (None,               {'fields':['question_text']}),
             ('Date information', {'fields':['pub_date']}),
