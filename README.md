@@ -220,3 +220,33 @@ In an actual project, you would probably use the `django.contrib.admin.AdminSite
 Since **APP_DIRS** is set to **True**, Django automatically looks for a `templates/` subdirectory within each application package, for use as a fallback (don’t forget that `django.contrib.admin` is an application).
 
 ## Advanced tutorial: How to write reusable apps
+
+Reusaility is the way of life in Python. The Python Package Index (PyPI) has a vast range of packages you can use in your own Python programs. Check out Django Packages for existing reusable apps you could incorporate in your project. Django itself is also just a Python package. This means that you can take existing Python packages or Django apps and compose them into your own web project. You only need to write the parts that make your project unique.
+
+**Package? App?** - A Python package provides a way of grouping related Python code for easy reuse. A package contains one or more files of Python code (also known as “modules”).A package can be imported with `import foo.bar` or `from foo import bar`. For a directory (like `polls`) to form a package, it must contain a special file `__init__.py`, even if this file is empty. A Django application is just a Python package that is specifically intended for use in a Django project. An application may use common Django conventions, such as having models, tests, urls, and views submodules.Later on we use the term packaging to describe the process of making a Python package easy for others to install. It can be a little confusing, we know.
+
+The current state of Python packaging is a bit muddled with various tools. For this tutorial, we’re going to use `setuptools` to build our package. It’s the recommended packaging tool (merged with the distribute fork). We’ll also be using pip to install and uninstall it.
+
+### Packaging your app
+
+Python _packaging_ refers to preparing your app in a specific format that can be easily installed and used. Django itself is packaged very much like this. For a small app like polls, this process isn’t too difficult.
+
+**Choosing a name for your app:** When choosing a name for your package, check resources like PyPI to avoid naming conflicts with existing packages. It’s often useful to prepend django- to your module name when* creating a package to distribute. This helps others looking for Django apps identify your app as Django specific. Application labels (that is, the final part of the dotted path to application packages) must be unique in INSTALLED_APPS. Avoid using the same label as any of the Django contrib packages, for example auth, admin, or messages.
+
+1. First, create a parent directory for polls, outside of your Django project. Call this directory `django-polls`.
+2. Move the polls directory into the `django-polls` directory.
+3. Create a file `django-polls/README.rst`
+4. Create a django-polls/LICENSE file. Choosing a license is beyond the scope of this tutorial, but suffice it to say that code released publicly without a license is useless. Django and many Django-compatible apps are distributed under the BSD license; however, you’re free to pick your own license. Just be aware that your licensing choice will affect who is able to use your code.
+5. Next we’ll create a `setup.py` file which provides details about how to build and install the app.
+6. Only Python modules and packages are included in the package by default. To include additional files, we’ll need to create a MANIFEST.in file.
+7. It’s optional, but recommended, to include detailed documentation with your app. Create an empty directory django-polls/docs for future documentation. Note that the docs directory won’t be included in your package unless you add some files to it. Many Django apps also provide their documentation online through sites like readthedocs.org.
+8. Try building your package with `python setup.py sdist` (run from inside `django-polls`). This creates a directory called `dist` and builds your new package, `django-polls-0.1.tar.gz`.
+
+### Using your own package
+
+1. To install the package, use pip: `pip install --user django-polls/dist/django-polls-0.1.tar.gz`
+2. With luck, your Django project should now work correctly again. Run the server again to confirm this.
+3. To uninstall the package, use pip: `pip uninstall django-polls`
+
+### Publishing your app
+Email the package to a friend, Upload the package on your website or, Post the package on a public repository, such as the **Python Package Index (PyPI)**. packaging.python.org has a good tutorial for doing this.
