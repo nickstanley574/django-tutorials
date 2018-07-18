@@ -250,3 +250,8 @@ Python _packaging_ refers to preparing your app in a specific format that can be
 
 ### Publishing your app
 Email the package to a friend, Upload the package on your website or, Post the package on a public repository, such as the **Python Package Index (PyPI)**. packaging.python.org has a good tutorial for doing this.
+
+
+# Django (2.0): An Introduction for Beginners
+I wanted to see how hard it was to add a second app to "mysite". 
+https://www.youtube.com/watch?v=QVX-etwgvJ8&t=3299s
